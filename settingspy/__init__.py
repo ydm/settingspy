@@ -15,35 +15,37 @@ Examples:
 0. Manally set settings:
 
 from settingspy import spy
-spy['qwe'] = 123
-spy['asd'] = 'string'
+spy['this_is_int'] = 123
+spy['this_is_str'] = 'string'
 
 
 1. Variable catalog
 
 Inside the directory specified by the SETTINGSPY_VARIABLE_CATALOG
 environment variable, a file named `something` may exist with the
-desired value.  File contents are EVALUATED!  Thus if you want to
-specify a string, you need to put it inside quotes.
-$ echo 123 > "$SETTINGSPY_VARIABLE_CATALOG/qwe"
-$ echo "'string'" > "$SETTINGSPY_VARIABLE_CATALOG/asd"
+desired value.  File contents are restricted to booleans, integers,
+floats, strings.  They are parsed as if eval()ed, so strings should be
+wrapped in parentheses.
+
+$ echo 123 > "$SETTINGSPY_VARIABLE_CATALOG/this_is_int"
+$ echo "'string'" > "$SETTINGSPY_VARIABLE_CATALOG/this_is_str"
 
 
 2. User provided settings module
 
-in mysettings.py:
-qwe = 123
-asd = 'string'
+in file mysettings.py:
+this_is_int = 123
+this_is_str = 'string'
 
 import os; os.environ['SETTINGSPY_SETTINGS_MODULE'] = 'mysettings'
-from settingspy import spy; print(spy.qwe, spy.asd)
+from settingspy import spy; print(spy.this_is_int, spy.this_is_str)
 
 
 3. Manually set fallbacks -- in case everything else fails
 
 from settingspy import spy
-spy.setfallback('qwe', 123)
-spy.setfallback('asd', 'string')
+spy.setfallback('this_is_int', 123)
+spy.setfallback('this_is_str', 'string')
 """
 
 from collections.abc import Mapping
@@ -53,22 +55,44 @@ import operator
 import os
 
 
-class ImproperlyConfigured(Exception):
-    pass
-
-
 SETTINGS_MODULE_VAR = 'SETTINGSPY_SETTINGS_MODULE'
 VARIABLE_CATALOG_VAR = 'SETTINGSPY_VARIABLE_CATALOG'
 
 
-def _parse_content(content):
-    # That's evil... We have to manually parse the content and convert
-    # it to either one of these: bool, dict, int, list, set, str
-    try:
-        return eval(content)
-    except (NameError, SyntaxError):
-        # Default to string
-        return content.strip()
+class ImproperlyConfigured(Exception):
+    pass
+
+
+def _parse_bool(s):
+    if s == 'False':
+        return False
+    elif s == 'True':
+        return True
+    raise ValueError
+
+
+def _parse_str(s):
+    wrappers = [
+        "'",
+        "'''",
+        '"""',
+        '"'
+    ]
+    for w in wrappers:
+        if s.startswith(w) and s.endswith(w):
+            length = len(w)
+            return s[length:-length]
+    raise ValueError
+
+
+def _parse_content(s):
+    stripped = s.strip()
+    for p in (int, float, _parse_bool, _parse_str):
+        try:
+            return p(stripped)
+        except ValueError:
+            pass
+    raise ValueError('content cannot be parsed: {}'.format(stripped))
 
 
 def _method_proxy(fn):
