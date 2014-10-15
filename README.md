@@ -43,9 +43,15 @@ in file mysettings.py:
 ```python
 this_is_int = 123
 this_is_str = 'string'
+```
 
-import os; os.environ['SETTINGSPY_SETTINGS_MODULE'] = 'mysettings'
-from settingspy import spy; print(spy.this_is_int, spy.this_is_str)
+Then, from another package:
+```python
+import os
+os.environ['SETTINGSPY_SETTINGS_MODULE'] = 'mysettings'
+
+from settingspy import spy
+print(spy.this_is_int, spy.this_is_str)
 ```
 
 #### Manually set fallbacks -- in case everything else fails ####
