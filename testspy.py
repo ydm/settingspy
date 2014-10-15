@@ -6,16 +6,16 @@ import tempfile
 import unittest
 
 tempdir = tempfile.mkdtemp()
-for k, v in (('varcatint', 123),
-             ('varcatstr', 'something'),
-             ('varcatbool', True),
-             ('prio0', 'varcat'),
-             ('prio1', 'varcat')):
+for k, v in (('catalogint', 123),
+             ('catalogstr', 'something'),
+             ('catalogbool', True),
+             ('prio0', 'catalog'),
+             ('prio1', 'catalog')):
     with open(os.path.join(tempdir, k), 'w', encoding='utf-8') as f:
         f.write(repr(v))
 
-os.environ['SETTINGSPY_SETTINGS_MODULE'] = 'testmod'
-os.environ['SETTINGSPY_VARIABLE_CATALOG'] = tempdir
+os.environ['SETTINGSPY_MODULE'] = 'testmod'
+os.environ['SETTINGSPY_CATALOG'] = tempdir
 
 from settingspy import spy
 
@@ -26,10 +26,10 @@ class TestSpy(unittest.TestCase):
         spy.setfallback('fallback_test', 123)
         self.assertEqual(spy.fallback_test, 123)
 
-    def test_varcat(self):
-        self.assertEqual(spy.varcatbool, True)
-        self.assertEqual(spy.varcatint, 123)
-        self.assertEqual(spy.varcatstr, 'something')
+    def test_catalog(self):
+        self.assertEqual(spy.catalogbool, True)
+        self.assertEqual(spy.catalogint, 123)
+        self.assertEqual(spy.catalogstr, 'something')
 
     def test_module(self):
         self.assertEqual(spy.modbool, True)
@@ -54,7 +54,7 @@ class TestSpy(unittest.TestCase):
 
         self.assertEqual(spy.prio3, 'fallback')
         self.assertEqual(spy.prio2, 'mod')
-        self.assertEqual(spy.prio1, 'varcat')
+        self.assertEqual(spy.prio1, 'catalog')
         self.assertEqual(spy.prio0, 'manual')
 
     def test_attrerror(self):
