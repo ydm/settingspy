@@ -48,7 +48,7 @@ this_is_str = 'string'
 Then, from another package:
 ```python
 import os
-os.environ['SETTINGSPY_SETTINGS_MODULE'] = 'mysettings'
+os.environ['SETTINGSPY_MODULE'] = 'mysettings'
 
 from settingspy import spy
 print(spy.this_is_int, spy.this_is_str)
