@@ -1,24 +1,21 @@
-settingspy
-==========
+# settingspy #
 
 Easy settings for projects, written in Python
 
-
-Description
------------
+## Description ##
 
 This module provides a `spy` object that resolves an attribute by
 searching sequentially in following places:
 
-0. manually set settings
-1. variable catalog
-2. user-provided settings module
-3. manually set fallbacks
+* manually set settings
+* variable catalog
+* user-provided settings module
+* manually set fallbacks
 
 
-Examples:
+### Examples ###
 
-0. Manally set settings:
+#### Manally set settings ####
 
 ```python
 from settingspy import spy
@@ -26,8 +23,7 @@ spy['this_is_int'] = 123
 spy['this_is_str'] = 'string'
 ```
 
-
-1. Variable catalog
+#### Variable catalog ####
 
 Inside the directory specified by the SETTINGSPY_VARIABLE_CATALOG
 environment variable, a file named `something` may exist with the
@@ -40,8 +36,7 @@ $ echo 123 > "$SETTINGSPY_VARIABLE_CATALOG/this_is_int"
 $ echo "'string'" > "$SETTINGSPY_VARIABLE_CATALOG/this_is_str"
 ```
 
-
-2. User provided settings module
+#### User provided settings module ####
 
 in file mysettings.py:
 ```python
@@ -52,8 +47,7 @@ import os; os.environ['SETTINGSPY_SETTINGS_MODULE'] = 'mysettings'
 from settingspy import spy; print(spy.this_is_int, spy.this_is_str)
 ```
 
-
-3. Manually set fallbacks -- in case everything else fails
+#### Manually set fallbacks -- in case everything else fails ####
 
 ```python
 from settingspy import spy
