@@ -8,7 +8,7 @@ This module provides a `spy` object that resolves an attribute by
 searching sequentially in following places:
 
 1. manually set settings
-2. variable catalog
+2. settings catalog
 3. user-provided settings module
 4. manually set fallbacks
 
@@ -21,19 +21,20 @@ searching sequentially in following places:
 from settingspy import spy
 spy['this_is_int'] = 123
 spy['this_is_str'] = 'string'
+print(spy.this_is_int, spy.this_is_str)
 ```
 
-#### Variable catalog ####
+#### Settings catalog ####
 
-Inside the directory specified by the SETTINGSPY_VARIABLE_CATALOG
-environment variable, a file named `something` may exist with the
-desired value.  File contents are restricted to booleans, integers,
-floats, strings.  They are parsed as if eval()ed, so strings should be
-wrapped in parentheses.
+Inside the directory specified by the SETTINGSPY_CATALOG environment
+variable, a file named `something` may exist with the desired value.
+File contents are restricted to booleans, integers, floats, strings.
+They are parsed as if eval()ed, so strings should be wrapped in
+parentheses.
 
 ```bash
-$ echo 123 > "$SETTINGSPY_VARIABLE_CATALOG/this_is_int"
-$ echo "'string'" > "$SETTINGSPY_VARIABLE_CATALOG/this_is_str"
+$ echo 123 > "$SETTINGSPY_CATALOG/this_is_int"
+$ echo "'string'" > "$SETTINGSPY_CATALOG/this_is_str"
 ```
 
 #### User provided settings module ####
