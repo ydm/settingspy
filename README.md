@@ -7,10 +7,10 @@ Easy settings for projects, written in Python
 This module provides a `spy` object that resolves an attribute by
 searching sequentially in following places:
 
-* manually set settings
-* variable catalog
-* user-provided settings module
-* manually set fallbacks
+1. manually set settings
+2. variable catalog
+3. user-provided settings module
+4. manually set fallbacks
 
 
 ### Examples ###
