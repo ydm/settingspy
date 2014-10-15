@@ -39,7 +39,7 @@ $ echo "'string'" > "$SETTINGSPY_CATALOG/this_is_str"
 
 #### User provided settings module ####
 
-in file mysettings.py:
+In mysettings.py:
 ```python
 this_is_int = 123
 this_is_str = 'string'
@@ -54,7 +54,9 @@ from settingspy import spy
 print(spy.this_is_int, spy.this_is_str)
 ```
 
-#### Manually set fallbacks -- in case everything else fails ####
+#### Manually set fallbacks
+
+In case a setting attribute isn't defined anywhere else.
 
 ```python
 from settingspy import spy
