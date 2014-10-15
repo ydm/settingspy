@@ -113,7 +113,7 @@ class VariableCatalog(Mapping):
             else:
                 for var in files:
                     fpath = os.path.join(variable_catalog, var)
-                    with open(fpath) as f:
+                    with open(fpath, encoding='utf-8') as f:
                         content = f.read()
                     self._wrapped[var] = _parse_content(content)
 
