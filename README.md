@@ -63,9 +63,3 @@ from settingspy import spy
 spy.setfallback('this_is_int', 123)
 spy.setfallback('this_is_str', 'string')
 ```
-
-
-This module provides a `spy` object that resolves a setting attribute by
-searching sequentially in following places: manually set settings,
-directory variables (also known as variable catalog), user-provided
-settings module, manually set fallback settings.
