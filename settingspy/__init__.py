@@ -5,7 +5,7 @@ This module provides a `spy` object that resolves an attribute by
 searching sequentially in following places:
 
 0. manually set settings
-1. variable catalog
+1. settings catalog
 2. user-provided settings module
 3. manually set fallbacks
 
@@ -17,18 +17,19 @@ Examples:
 from settingspy import spy
 spy['this_is_int'] = 123
 spy['this_is_str'] = 'string'
+print(spy.this_is_int, spy.this_is_str)
 
 
-1. Variable catalog
+1. Settings catalog
 
-Inside the directory specified by the SETTINGSPY_VARIABLE_CATALOG
-environment variable, a file named `something` may exist with the
-desired value.  File contents are restricted to booleans, integers,
-floats, strings.  They are parsed as if eval()ed, so strings should be
-wrapped in parentheses.
+Inside the directory specified by the SETTINGSPY_CATALOG environment
+variable, a file named `something` may exist with the desired value.
+File contents are restricted to booleans, integers, floats, strings.
+They are parsed as if eval()ed, so strings should be wrapped in
+parentheses.
 
-$ echo 123 > "$SETTINGSPY_VARIABLE_CATALOG/this_is_int"
-$ echo "'string'" > "$SETTINGSPY_VARIABLE_CATALOG/this_is_str"
+$ echo 123 > "$SETTINGSPY_CATALOG/this_is_int"
+$ echo "'string'" > "$SETTINGSPY_CATALOG/this_is_str"
 
 
 2. User provided settings module
@@ -37,11 +38,13 @@ in file mysettings.py:
 this_is_int = 123
 this_is_str = 'string'
 
-import os; os.environ['SETTINGSPY_SETTINGS_MODULE'] = 'mysettings'
+import os; os.environ['SETTINGSPY_MODULE'] = 'mysettings'
 from settingspy import spy; print(spy.this_is_int, spy.this_is_str)
 
 
-3. Manually set fallbacks -- in case everything else fails
+3. Manually set fallbacks
+
+In case a setting attribute isn't defined anywhere else.
 
 from settingspy import spy
 spy.setfallback('this_is_int', 123)
@@ -55,8 +58,8 @@ import operator
 import os
 
 
-SETTINGS_MODULE_VAR = 'SETTINGSPY_SETTINGS_MODULE'
-VARIABLE_CATALOG_VAR = 'SETTINGSPY_VARIABLE_CATALOG'
+MODULE_VAR = 'SETTINGSPY_MODULE'
+CATALOG_VAR = 'SETTINGSPY_CATALOG'
 
 
 class ImproperlyConfigured(Exception):
@@ -101,18 +104,18 @@ def _method_proxy(fn):
     return inner
 
 
-class VariableCatalog(Mapping):
+class SettingsCatalog(Mapping):
 
-    def __init__(self, variable_catalog):
+    def __init__(self, catalog):
         self._wrapped = {}
-        if variable_catalog:
+        if catalog:
             try:
-                files = os.listdir(variable_catalog)
+                files = os.listdir(catalog)
             except FileNotFoundError as e:
                 raise ImproperlyConfigured(e)
             else:
                 for var in files:
-                    fpath = os.path.join(variable_catalog, var)
+                    fpath = os.path.join(catalog, var)
                     with open(fpath, encoding='utf-8') as f:
                         content = f.read()
                     self._wrapped[var] = _parse_content(content)
@@ -133,14 +136,14 @@ class VariableCatalog(Mapping):
 
 class Settings(object):
 
-    def __init__(self, variable_catalog=None, settings_module=None):
+    def __init__(self, catalog=None, module=None):
         super(Settings, self).__init__()
-        self.init(variable_catalog, settings_module)
+        self.init(catalog, module)
 
-    def init(self, variable_catalog=None, settings_module=None):
+    def init(self, catalog=None, module=None):
         self.manual = {}
-        self.catalog = VariableCatalog(variable_catalog)
-        self.mod = import_module(settings_module) if settings_module else None
+        self.catalog = SettingsCatalog(catalog)
+        self.mod = import_module(module) if module else None
         self.fallback = {}
 
     def __getattr__(self, name):
@@ -167,6 +170,6 @@ class Settings(object):
 
 
 spy = Settings(
-    os.environ.get(VARIABLE_CATALOG_VAR),
-    os.environ.get(SETTINGS_MODULE_VAR)
+    os.environ.get(CATALOG_VAR),
+    os.environ.get(MODULE_VAR)
 )
