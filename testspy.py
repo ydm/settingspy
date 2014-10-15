@@ -57,6 +57,10 @@ class TestSpy(unittest.TestCase):
         self.assertEqual(spy.prio1, 'varcat')
         self.assertEqual(spy.prio0, 'manual')
 
+    def test_attrerror(self):
+        f = lambda: spy.nonexistent
+        self.assertRaises(AttributeError, f)
+
 
 if __name__ == '__main__':
     unittest.main()
