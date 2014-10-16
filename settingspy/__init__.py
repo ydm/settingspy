@@ -116,9 +116,10 @@ class SettingsCatalog(Mapping):
             else:
                 for var in files:
                     fpath = os.path.join(catalog, var)
-                    with open(fpath, encoding='utf-8') as f:
-                        content = f.read()
-                    self._wrapped[var] = _parse_content(content)
+                    if os.path.isfile(fpath):
+                        with open(fpath, encoding='utf-8') as f:
+                            content = f.read()
+                        self._wrapped[var] = _parse_content(content)
 
     # This object is actually a mapping and should provide these
     # methods, as defined by ABC
