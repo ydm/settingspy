@@ -64,5 +64,5 @@ setup(
     name='settingspy',
     packages=['settingspy'],
     url='https://github.com/ydm/settingspy',
-    version='1.1',
+    version='1.1.1',
 )

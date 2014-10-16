@@ -58,6 +58,9 @@ import operator
 import os
 
 
+__version__ = '1.1.1'
+
+
 MODULE_VAR = 'SETTINGSPY_MODULE'
 CATALOG_VAR = 'SETTINGSPY_CATALOG'
 
