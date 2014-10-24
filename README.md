@@ -15,7 +15,8 @@ searching sequentially in following places:
 
 ### Examples ###
 
-#### Manally set settings ####
+
+##### Manally set settings #####
 
 ```python
 from settingspy import spy
@@ -24,7 +25,7 @@ spy['this_is_str'] = 'string'
 print(spy.this_is_int, spy.this_is_str)
 ```
 
-#### Settings catalog ####
+##### Settings catalog #####
 
 Inside the directory specified by the SETTINGSPY_CATALOG environment
 variable, a file named `something` may exist with the desired value.
@@ -37,7 +38,7 @@ $ echo 123 > "$SETTINGSPY_CATALOG/this_is_int"
 $ echo "'string'" > "$SETTINGSPY_CATALOG/this_is_str"
 ```
 
-#### User provided settings module ####
+##### User provided settings module #####
 
 In mysettings.py:
 ```python
@@ -54,7 +55,7 @@ from settingspy import spy
 print(spy.this_is_int, spy.this_is_str)
 ```
 
-#### Manually set fallbacks
+##### Manually set fallbacks #####
 
 In case a setting attribute isn't defined anywhere else.
 
@@ -76,7 +77,7 @@ import sys
 from functools import partial
 from settingspy import spy
 
-# Default setting client may override using settingspy
+# Default settings that client may override as needed
 spy.setfallback('LOGENABLED', True)
 spy.setfallback('LOGFILE', sys.stderr)
 spy.setfallback('LOGLEVEL', 0)
@@ -102,9 +103,9 @@ import log
 
 spy['LOGLEVEL'] = 3
 
-log.m("this won't be printed")
-log.i("this won't be printed too")
-log.d("neither will be this")
-log.w("but this WILL be printed")
-log.e("as well as this")
+log.m("this is level 0 and won't be printed")
+log.i("level 1, won't be printed")
+log.d("level 2, won't be printed")
+log.w("but this is level 3 and WILL be printed")
+log.e("as well as this, because it's level 4")
 ```
