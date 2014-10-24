@@ -73,7 +73,7 @@ import operator
 import os
 
 
-__version__ = '1.1.1'
+__version__ = '1.1.2'
 
 
 MODULE_VAR = 'SETTINGSPY_MODULE'
